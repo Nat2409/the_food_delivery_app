@@ -7,6 +7,7 @@ export default function ShoppingCart() {
   const [myGoods, setMyGoods] = useState([]);
   const [itemsFromLocalStorage, setItemsFromLocalStorage] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [myOrder, setMyOrder] = useState([]);
 
   useEffect(() => {
     const itemsInLocalStorage = JSON.parse(localStorage.getItem('items'));
@@ -62,6 +63,16 @@ export default function ShoppingCart() {
       return result;
     }, 0);
     setTotalPrice(totalResult);
+  };
+  const onSubmit = () => {
+    const myChoise = myGoods.map(({ name, count, price }) => {
+      console.log(name);
+      return { name, count, price, total: count * price };
+    });
+    const myOrder = [...myChoise, { totalPrice: totalPrice }];
+    console.log(myOrder);
+    localStorage.setItem('myOrder', JSON.stringify([myOrder]));
+    return setMyOrder(myOrder);
   };
   return (
     <div className={styles.cart__container}>
@@ -152,7 +163,11 @@ export default function ShoppingCart() {
       </section>
       <section className={styles.cart__total}>
         <p className={styles.total__price}>Total price: {totalPrice}</p>
-        <button className={styles.total__submit} type="submit">
+        <button
+          className={styles.total__submit}
+          type="submit"
+          onClick={onSubmit}
+        >
           Submit
         </button>
       </section>
